@@ -42,7 +42,7 @@ export default function ProductPage() {
       name: product.name,
       price: product.price,
       quantity,
-      image: product.images[0]?.src || "/placeholder.svg",
+      image: product.images[0]?.src || "/placehold.jpg",
       slug: product.slug,
     })
   }
@@ -86,7 +86,7 @@ export default function ProductPage() {
         <div className="space-y-4">
           <div className="aspect-square relative overflow-hidden rounded-lg bg-gray-100">
             <Image
-              src={product.images[selectedImage]?.src || "/placeholder.svg"}
+              src={product.images[selectedImage]?.src || "/placehold.jpg"}
               alt={product.name}
               fill
               className="object-cover"
@@ -105,7 +105,7 @@ export default function ProductPage() {
                   }`}
                 >
                   <Image
-                    src={image.src || "/placeholder.svg"}
+                    src={image.src || "/placehold.jpg"}
                     alt={`${product.name} ${index + 1}`}
                     fill
                     className="object-cover"

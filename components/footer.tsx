@@ -196,9 +196,9 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">© 2024 Active Fitness Store. All rights reserved.</p>
             <div className="flex space-x-4 mt-4 md:mt-0">
-              <img src="/placeholder.svg?height=30&width=50" alt="Visa" className="h-6" />
-              <img src="/placeholder.svg?height=30&width=50" alt="Mastercard" className="h-6" />
-              <img src="/placeholder.svg?height=30&width=50" alt="PayPal" className="h-6" />
+              <img src="/placehold.jpg?height=30&width=50" alt="Visa" className="h-6" />
+              <img src="/placehold.jpg?height=30&width=50" alt="Mastercard" className="h-6" />
+              <img src="/placehold.jpg?height=30&width=50" alt="PayPal" className="h-6" />
             </div>
           </div>
         </div>
