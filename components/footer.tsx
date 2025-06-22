@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div className="flex items-center justify-center space-x-3">
-              <div className="bg-red-600 p-3 rounded-full">
+              <div className="bg-yellow-600 p-3 rounded-full">
                 <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
                 </svg>
@@ -21,7 +21,7 @@ export default function Footer() {
             </div>
 
             <div className="flex items-center justify-center space-x-3">
-              <div className="bg-red-600 p-3 rounded-full">
+              <div className="bg-yellow-600 p-3 rounded-full">
                 <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"
@@ -37,7 +37,7 @@ export default function Footer() {
             </div>
 
             <div className="flex items-center justify-center space-x-3">
-              <div className="bg-red-600 p-3 rounded-full">
+              <div className="bg-yellow-600 p-3 rounded-full">
                 <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"

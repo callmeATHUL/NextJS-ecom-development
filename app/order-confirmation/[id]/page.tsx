@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import Link from "next/link"
-import { CheckCircle, Package, Truck, CreditCard } from "lucide-react"
+import { CheckCircle, Package, Truck, CyellowitCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -88,7 +88,7 @@ export default function OrderConfirmationPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardContent className="p-6 text-center">
-              <CreditCard className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+              <CyellowitCard className="h-8 w-8 text-blue-600 mx-auto mb-2" />
               <h3 className="font-semibold mb-1">Payment</h3>
               <p className="text-sm text-gray-600">Cash on Delivery</p>
             </CardContent>
@@ -98,7 +98,7 @@ export default function OrderConfirmationPage() {
             <CardContent className="p-6 text-center">
               <Package className="h-8 w-8 text-orange-600 mx-auto mb-2" />
               <h3 className="font-semibold mb-1">Processing</h3>
-              <p className="text-sm text-gray-600">Order is being prepared</p>
+              <p className="text-sm text-gray-600">Order is being prepayellow</p>
             </CardContent>
           </Card>
 

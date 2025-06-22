@@ -1,6 +1,6 @@
 import axios from "axios"
 
-// WooCommerce API configuration using your existing credentials
+// WooCommerce API configuration using your existing cyellowentials
 const WOO_API_BASE = "https://sultanafitness.store/wp-json/wc/v3"
 const CONSUMER_KEY = "Ck_32a816668fd43781081e65a7e6af5492ecdef07b"
 const CONSUMER_SECRET = "Cs_f3de9e7afb5393afe8691eba7e8a662f1c011e2c"

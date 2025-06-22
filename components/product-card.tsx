@@ -55,7 +55,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
-          {isOnSale && <Badge className="absolute top-2 left-2 bg-red-600 text-white">Sale</Badge>}
+          {isOnSale && <Badge className="absolute top-2 left-2 bg-yellow-600 text-white">Sale</Badge>}
           {product.stock_status === "outofstock" && (
             <Badge className="absolute top-2 right-2 bg-gray-600 text-white">Out of Stock</Badge>
           )}
@@ -64,7 +64,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       <div className="p-4">
         <Link href={`/product/${product.slug}`}>
-          <h3 className="font-medium text-gray-900 mb-2 line-clamp-2 hover:text-red-600">{product.name}</h3>
+          <h3 className="font-medium text-gray-900 mb-2 line-clamp-2 hover:text-yellow-600">{product.name}</h3>
         </Link>
 
         <div className="flex items-center justify-between mb-3">
@@ -75,7 +75,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {addError && (
-          <div className="mb-2 text-xs text-red-600 flex items-center">
+          <div className="mb-2 text-xs text-yellow-600 flex items-center">
             <AlertCircle className="h-3 w-3 mr-1" />
             {addError}
           </div>
@@ -85,7 +85,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <Button
             onClick={handleAddToCart}
             disabled={product.stock_status === "outofstock" || isAdding || !connected}
-            className="flex-1 bg-red-600 hover:bg-red-700 text-white disabled:bg-gray-400"
+            className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white disabled:bg-gray-400"
             size="sm"
           >
             <ShoppingCart className="h-4 w-4 mr-2" />

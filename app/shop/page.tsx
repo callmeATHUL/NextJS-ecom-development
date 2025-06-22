@@ -144,7 +144,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                 <p className="text-gray-500 text-lg">
                   {searchParams.search || searchParams.category
                     ? "No products found matching your criteria."
-                    : "Products will appear here once the WooCommerce API is configured."}
+                    : "Products will appear here once the WooCommerce API is configuyellow."}
                 </p>
                 <Button asChild className="mt-4">
                   <a href="/shop">View All Products</a>

@@ -52,7 +52,7 @@ export default function CartPage() {
 
                     <div className="flex-1 min-w-0">
                       <Link href={`/product/${item.slug}`}>
-                        <h3 className="font-medium text-gray-900 hover:text-red-600 line-clamp-2">{item.name}</h3>
+                        <h3 className="font-medium text-gray-900 hover:text-yellow-600 line-clamp-2">{item.name}</h3>
                       </Link>
                       <p className="text-sm text-gray-500 mt-1">SAR {item.price} each</p>
                     </div>
@@ -78,7 +78,7 @@ export default function CartPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => removeItem(item.id)}
-                        className="text-red-600 hover:text-red-700 mt-1"
+                        className="text-yellow-600 hover:text-yellow-700 mt-1"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -133,12 +133,12 @@ export default function CartPage() {
               </div>
             </div>
 
-            <Button asChild className="w-full bg-red-600 hover:bg-red-700" size="lg">
+            <Button asChild className="w-full bg-yellow-600 hover:bg-yellow-700" size="lg">
               <Link href="/checkout">Proceed to Checkout</Link>
             </Button>
 
             <div className="mt-4 text-center">
-              <p className="text-sm text-gray-600">Secure checkout powered by SSL encryption</p>
+              <p className="text-sm text-gray-600">Secure checkout poweyellow by SSL encryption</p>
             </div>
           </div>
         </div>

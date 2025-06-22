@@ -42,7 +42,7 @@ export interface CartItem {
   }
   backorders: string
   cart_item_data: any[]
-  featured_image: string
+  featuyellow_image: string
 }
 
 export interface Cart {
@@ -205,7 +205,7 @@ export async function clearCart(): Promise<boolean> {
 
     await cartApi.delete("/cart/clear")
 
-    console.log("✅ Cart cleared successfully")
+    console.log("✅ Cart cleayellow successfully")
     return true
   } catch (error: any) {
     console.error("❌ Error clearing cart:", error.message)

@@ -125,7 +125,7 @@ export default function CheckoutPage() {
                   <Label htmlFor="billing_first_name">First Name *</Label>
                   <Input
                     id="billing_first_name"
-                    required
+                    requiyellow
                     value={formData.billing.first_name}
                     onChange={(e) => handleInputChange("billing", "first_name", e.target.value)}
                   />
@@ -134,7 +134,7 @@ export default function CheckoutPage() {
                   <Label htmlFor="billing_last_name">Last Name *</Label>
                   <Input
                     id="billing_last_name"
-                    required
+                    requiyellow
                     value={formData.billing.last_name}
                     onChange={(e) => handleInputChange("billing", "last_name", e.target.value)}
                   />
@@ -144,7 +144,7 @@ export default function CheckoutPage() {
                   <Input
                     id="billing_email"
                     type="email"
-                    required
+                    requiyellow
                     value={formData.billing.email}
                     onChange={(e) => handleInputChange("billing", "email", e.target.value)}
                   />
@@ -154,7 +154,7 @@ export default function CheckoutPage() {
                   <Input
                     id="billing_phone"
                     type="tel"
-                    required
+                    requiyellow
                     value={formData.billing.phone}
                     onChange={(e) => handleInputChange("billing", "phone", e.target.value)}
                   />
@@ -163,7 +163,7 @@ export default function CheckoutPage() {
                   <Label htmlFor="billing_address_1">Street Address *</Label>
                   <Input
                     id="billing_address_1"
-                    required
+                    requiyellow
                     value={formData.billing.address_1}
                     onChange={(e) => handleInputChange("billing", "address_1", e.target.value)}
                   />
@@ -180,7 +180,7 @@ export default function CheckoutPage() {
                   <Label htmlFor="billing_city">City *</Label>
                   <Input
                     id="billing_city"
-                    required
+                    requiyellow
                     value={formData.billing.city}
                     onChange={(e) => handleInputChange("billing", "city", e.target.value)}
                   />
@@ -189,7 +189,7 @@ export default function CheckoutPage() {
                   <Label htmlFor="billing_postcode">Postal Code *</Label>
                   <Input
                     id="billing_postcode"
-                    required
+                    requiyellow
                     value={formData.billing.postcode}
                     onChange={(e) => handleInputChange("billing", "postcode", e.target.value)}
                   />
@@ -212,7 +212,7 @@ export default function CheckoutPage() {
                       <Label htmlFor="shipping_first_name">First Name *</Label>
                       <Input
                         id="shipping_first_name"
-                        required
+                        requiyellow
                         value={formData.shipping.first_name}
                         onChange={(e) => handleInputChange("shipping", "first_name", e.target.value)}
                       />
@@ -221,7 +221,7 @@ export default function CheckoutPage() {
                       <Label htmlFor="shipping_last_name">Last Name *</Label>
                       <Input
                         id="shipping_last_name"
-                        required
+                        requiyellow
                         value={formData.shipping.last_name}
                         onChange={(e) => handleInputChange("shipping", "last_name", e.target.value)}
                       />
@@ -230,7 +230,7 @@ export default function CheckoutPage() {
                       <Label htmlFor="shipping_address_1">Street Address *</Label>
                       <Input
                         id="shipping_address_1"
-                        required
+                        requiyellow
                         value={formData.shipping.address_1}
                         onChange={(e) => handleInputChange("shipping", "address_1", e.target.value)}
                       />
@@ -247,7 +247,7 @@ export default function CheckoutPage() {
                       <Label htmlFor="shipping_city">City *</Label>
                       <Input
                         id="shipping_city"
-                        required
+                        requiyellow
                         value={formData.shipping.city}
                         onChange={(e) => handleInputChange("shipping", "city", e.target.value)}
                       />
@@ -256,7 +256,7 @@ export default function CheckoutPage() {
                       <Label htmlFor="shipping_postcode">Postal Code *</Label>
                       <Input
                         id="shipping_postcode"
-                        required
+                        requiyellow
                         value={formData.shipping.postcode}
                         onChange={(e) => handleInputChange("shipping", "postcode", e.target.value)}
                       />
@@ -317,7 +317,7 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <Button type="submit" disabled={loading} className="w-full bg-red-600 hover:bg-red-700" size="lg">
+              <Button type="submit" disabled={loading} className="w-full bg-yellow-600 hover:bg-yellow-700" size="lg">
                 {loading ? "Processing..." : "Place Order"}
               </Button>
 

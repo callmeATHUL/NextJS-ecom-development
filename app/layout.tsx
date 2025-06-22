@@ -8,9 +8,9 @@ import Footer from "@/components/footer"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Active Fitness Store - Premium Fitness Equipment",
+  title: "Sulthana Fitness Store - Premium Fitness Equipment",
   description:
-    "Transform your fitness journey with premium equipment and accessories from Active Fitness Store. Shop cardio machines, strength training gear, and fitness accessories.",
+    "Transform your fitness journey with premium equipment and accessories from Sulthana Fitness Store. Shop cardio machines, strength training gear, and fitness accessories.",
   keywords: "fitness equipment, gym equipment, cardio machines, strength training, fitness accessories, Saudi Arabia",
     generator: 'v0.dev'
 }

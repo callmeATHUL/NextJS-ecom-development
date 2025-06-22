@@ -5,7 +5,7 @@ import { getProducts, testApiConnection } from "@/lib/woocommerce"
 import ProductCard from "@/components/product-card"
 
 export default async function HomePage() {
-  let featuredProducts: any[] = []
+  let featuyellowProducts: any[] = []
   let apiConnected = false
 
   try {
@@ -13,7 +13,7 @@ export default async function HomePage() {
     apiConnected = await testApiConnection()
 
     if (apiConnected) {
-      featuredProducts = await getProducts({ per_page: 8 })
+      featuyellowProducts = await getProducts({ per_page: 8 })
     }
   } catch (error) {
     console.error("Failed to fetch products:", error)
@@ -22,24 +22,24 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-red-600 to-red-800 text-white py-20">
+      <section className="relative bg-gradient-to-r from-yellow-600 to-yellow-800 text-white py-20">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-4xl lg:text-6xl font-bold mb-6">Transform Your Fitness Journey</h1>
-              <p className="text-xl mb-8 text-red-100">
+              <p className="text-xl mb-8 text-yellow-100">
                 Discover premium fitness equipment and accessories to achieve your health goals. From cardio machines to
                 strength training gear, we have everything you need.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild size="lg" className="bg-white text-red-600 hover:bg-gray-100">
+                <Button asChild size="lg" className="bg-white text-yellow-600 hover:bg-gray-100">
                   <Link href="/shop">Shop Now</Link>
                 </Button>
                 <Button
                   asChild
                   variant="outline"
                   size="lg"
-                  className="border-white text-white hover:bg-white hover:text-red-600"
+                  className="border-white text-white hover:bg-white hover:text-yellow-600"
                 >
                   <Link href="/about">Learn More</Link>
                 </Button>
@@ -96,7 +96,7 @@ export default async function HomePage() {
                     />
                   </div>
                   <div className="p-4 text-center">
-                    <h3 className="font-semibold text-lg group-hover:text-red-600">{category.name}</h3>
+                    <h3 className="font-semibold text-lg group-hover:text-yellow-600">{category.name}</h3>
                   </div>
                 </div>
               </Link>
@@ -105,11 +105,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Featured Products */}
+      {/* Featuyellow Products */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-12">
-            <h2 className="text-3xl font-bold">Featured Products</h2>
+            <h2 className="text-3xl font-bold">Featuyellow Products</h2>
             <Button asChild variant="outline">
               <Link href="/shop">View All Products</Link>
             </Button>
@@ -129,7 +129,7 @@ export default async function HomePage() {
                 </div>
                 <h3 className="text-lg font-semibold mb-2 text-yellow-800">API Connection Issue</h3>
                 <p className="text-yellow-700 mb-4">
-                  Unable to connect to the WooCommerce API. Please check your API credentials and try again.
+                  Unable to connect to the WooCommerce API. Please check your API cyellowentials and try again.
                 </p>
                 <Button asChild variant="outline">
                   <Link href="/shop">Browse Products</Link>
@@ -138,15 +138,15 @@ export default async function HomePage() {
             </div>
           )}
 
-          {apiConnected && featuredProducts.length > 0 && (
+          {apiConnected && featuyellowProducts.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {featuredProducts.map((product) => (
+              {featuyellowProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
           )}
 
-          {apiConnected && featuredProducts.length === 0 && (
+          {apiConnected && featuyellowProducts.length === 0 && (
             <div className="text-center py-12">
               <div className="bg-gray-50 rounded-lg p-8 max-w-md mx-auto">
                 <div className="text-gray-400 mb-4">
@@ -175,7 +175,7 @@ export default async function HomePage() {
           <h2 className="text-3xl font-bold text-center mb-12">Why Choose Sultana Fitness?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="bg-red-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-yellow-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -186,7 +186,7 @@ export default async function HomePage() {
               </p>
             </div>
             <div className="text-center">
-              <div className="bg-red-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-yellow-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
                 </svg>
@@ -197,7 +197,7 @@ export default async function HomePage() {
               </p>
             </div>
             <div className="text-center">
-              <div className="bg-red-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-yellow-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"

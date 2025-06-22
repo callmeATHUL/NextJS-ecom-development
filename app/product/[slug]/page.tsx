@@ -91,7 +91,7 @@ export default function ProductPage() {
               fill
               className="object-cover"
             />
-            {isOnSale && <Badge className="absolute top-4 left-4 bg-red-600 text-white">Sale</Badge>}
+            {isOnSale && <Badge className="absolute top-4 left-4 bg-yellow-600 text-white">Sale</Badge>}
           </div>
 
           {product.images.length > 1 && (
@@ -101,7 +101,7 @@ export default function ProductPage() {
                   key={image.id}
                   onClick={() => setSelectedImage(index)}
                   className={`aspect-square relative overflow-hidden rounded-lg border-2 ${
-                    selectedImage === index ? "border-red-600" : "border-gray-200"
+                    selectedImage === index ? "border-yellow-600" : "border-gray-200"
                   }`}
                 >
                   <Image
@@ -131,7 +131,7 @@ export default function ProductPage() {
           </div>
 
           <div className="flex items-center space-x-4">
-            <span className="text-3xl font-bold text-red-600">SAR {displayPrice}</span>
+            <span className="text-3xl font-bold text-yellow-600">SAR {displayPrice}</span>
             {isOnSale && <span className="text-xl text-gray-500 line-through">SAR {product.regular_price}</span>}
           </div>
 
@@ -187,7 +187,7 @@ export default function ProductPage() {
               <Button
                 onClick={handleAddToCart}
                 disabled={product.stock_status === "outofstock"}
-                className="flex-1 bg-red-600 hover:bg-red-700"
+                className="flex-1 bg-yellow-600 hover:bg-yellow-700"
                 size="lg"
               >
                 <ShoppingCart className="h-5 w-5 mr-2" />

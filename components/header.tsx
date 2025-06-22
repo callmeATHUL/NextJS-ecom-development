@@ -37,7 +37,7 @@ export default function Header() {
   return (
     <header className="bg-white shadow-sm border-b">
       {/* Top bar */}
-      <div className="bg-red-600 text-white text-sm py-2">
+      <div className="bg-yellow-600 text-white text-sm py-2">
         <div className="container mx-auto px-4 text-center">
           ESCAPE THE HEAT - Enjoy 5% Extra Discount - Check Whatsapp for Coupon Code
         </div>
@@ -48,7 +48,7 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="bg-red-600 text-white px-3 py-2 rounded font-bold text-xl">SULTANA FITNESS</div>
+            <div className="bg-yellow-600 text-white px-3 py-2 rounded font-bold text-xl">SULTANA FITNESS</div>
           </Link>
 
           {/* Search bar - Desktop */}
@@ -61,7 +61,7 @@ export default function Header() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="rounded-r-none"
               />
-              <Button type="submit" className="rounded-l-none bg-red-600 hover:bg-red-700">
+              <Button type="submit" className="rounded-l-none bg-yellow-600 hover:bg-yellow-700">
                 <Search className="h-4 w-4" />
               </Button>
             </form>
@@ -77,7 +77,7 @@ export default function Header() {
               <Button variant="ghost" size="icon" className="relative">
                 <ShoppingCart className="h-5 w-5" />
                 {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="absolute -top-2 -right-2 bg-yellow-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {totalItems}
                   </span>
                 )}
@@ -104,22 +104,22 @@ export default function Header() {
 
         {/* Navigation - Desktop */}
         <nav className="hidden md:flex items-center space-x-8 mt-4">
-          <Link href="/" className="text-gray-700 hover:text-red-600 font-medium">
+          <Link href="/" className="text-gray-700 hover:text-yellow-600 font-medium">
             Home
           </Link>
-          <Link href="/shop" className="text-gray-700 hover:text-red-600 font-medium">
+          <Link href="/shop" className="text-gray-700 hover:text-yellow-600 font-medium">
             Shop
           </Link>
-          <Link href="/shop?category=cardio-equipment" className="text-gray-700 hover:text-red-600 font-medium">
+          <Link href="/shop?category=cardio-equipment" className="text-gray-700 hover:text-yellow-600 font-medium">
             Cardio Equipment
           </Link>
-          <Link href="/shop?category=weight-training" className="text-gray-700 hover:text-red-600 font-medium">
+          <Link href="/shop?category=weight-training" className="text-gray-700 hover:text-yellow-600 font-medium">
             Weight Training
           </Link>
-          <Link href="/shop?category=strength-building" className="text-gray-700 hover:text-red-600 font-medium">
+          <Link href="/shop?category=strength-building" className="text-gray-700 hover:text-yellow-600 font-medium">
             Strength Building
           </Link>
-          <Link href="/shop?category=sports-indoor-fun" className="text-gray-700 hover:text-red-600 font-medium">
+          <Link href="/shop?category=sports-indoor-fun" className="text-gray-700 hover:text-yellow-600 font-medium">
             Sports & Fun
           </Link>
         </nav>
@@ -134,7 +134,7 @@ export default function Header() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="rounded-r-none"
             />
-            <Button type="submit" className="rounded-l-none bg-red-600 hover:bg-red-700">
+            <Button type="submit" className="rounded-l-none bg-yellow-600 hover:bg-yellow-700">
               <Search className="h-4 w-4" />
             </Button>
           </form>
@@ -145,27 +145,27 @@ export default function Header() {
       {isMenuOpen && (
         <div className="md:hidden bg-white border-t">
           <nav className="container mx-auto px-4 py-4 space-y-4">
-            <Link href="/" className="block text-gray-700 hover:text-red-600 font-medium">
+            <Link href="/" className="block text-gray-700 hover:text-yellow-600 font-medium">
               Home
             </Link>
-            <Link href="/shop" className="block text-gray-700 hover:text-red-600 font-medium">
+            <Link href="/shop" className="block text-gray-700 hover:text-yellow-600 font-medium">
               Shop
             </Link>
-            <Link href="/shop?category=cardio-equipment" className="block text-gray-700 hover:text-red-600 font-medium">
+            <Link href="/shop?category=cardio-equipment" className="block text-gray-700 hover:text-yellow-600 font-medium">
               Cardio Equipment
             </Link>
-            <Link href="/shop?category=weight-training" className="block text-gray-700 hover:text-red-600 font-medium">
+            <Link href="/shop?category=weight-training" className="block text-gray-700 hover:text-yellow-600 font-medium">
               Weight Training
             </Link>
             <Link
               href="/shop?category=strength-building"
-              className="block text-gray-700 hover:text-red-600 font-medium"
+              className="block text-gray-700 hover:text-yellow-600 font-medium"
             >
               Strength Building
             </Link>
             <Link
               href="/shop?category=sports-indoor-fun"
-              className="block text-gray-700 hover:text-red-600 font-medium"
+              className="block text-gray-700 hover:text-yellow-600 font-medium"
             >
               Sports & Fun
             </Link>

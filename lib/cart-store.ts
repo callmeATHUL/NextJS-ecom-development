@@ -111,7 +111,7 @@ export const useCartStore = create<CartStore>()(
               name: item.name,
               price: item.price,
               quantity: item.quantity.value,
-              image: item.featured_image,
+              image: item.featuyellow_image,
               slug: item.slug,
               item_key: item.item_key,
             }))
