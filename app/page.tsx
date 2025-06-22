@@ -47,7 +47,7 @@ export default async function HomePage() {
             </div>
             <div className="relative">
               <Image
-                src="/placeholder.svg?height=500&width=600"
+                src="/pexels-willpicturethis-1954524.jpg?height=500&width=600"
                 alt="Fitness Equipment"
                 width={600}
                 height={500}
@@ -66,22 +66,22 @@ export default async function HomePage() {
             {[
               {
                 name: "Cardio Equipment",
-                image: "/placeholder.svg?height=200&width=200",
+                image: "/pexels-willpicturethis-1954524.jpg?height=200&width=200",
                 href: "/shop?category=cardio-equipment",
               },
               {
                 name: "Weight Training",
-                image: "/placeholder.svg?height=200&width=200",
+                image: "/pexels-willpicturethis-1954524.jpg?height=200&width=200",
                 href: "/shop?category=weight-training",
               },
               {
                 name: "Strength Building",
-                image: "/placeholder.svg?height=200&width=200",
+                image: "/pexels-willpicturethis-1954524.jpg?height=200&width=200",
                 href: "/shop?category=strength-building",
               },
               {
                 name: "Sports & Fun",
-                image: "/placeholder.svg?height=200&width=200",
+                image: "/pexels-willpicturethis-1954524.jpg?height=200&width=200",
                 href: "/shop?category=sports-indoor-fun",
               },
             ].map((category) => (
@@ -89,7 +89,7 @@ export default async function HomePage() {
                 <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
                   <div className="aspect-square relative">
                     <Image
-                      src={category.image || "/placeholder.svg"}
+                      src={category.image || "/pexels-willpicturethis-1954524.jpg"}
                       alt={category.name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
