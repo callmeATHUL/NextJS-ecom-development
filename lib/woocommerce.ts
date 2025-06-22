@@ -1,9 +1,9 @@
 import axios from "axios"
 
-// WooCommerce API configuration using your existing cyellowentials
+// WooCommerce API configuration using your existing credentials
 const WOO_API_BASE = "https://sultanafitness.store/wp-json/wc/v3"
-const CONSUMER_KEY = "Ck_32a816668fd43781081e65a7e6af5492ecdef07b"
-const CONSUMER_SECRET = "Cs_f3de9e7afb5393afe8691eba7e8a662f1c011e2c"
+const CONSUMER_KEY = "ck_36e0421e0c1fed0fd1ae42f49d9287ab3d4e6cff"
+const CONSUMER_SECRET = "cs_c74c126f4d537b7273c3c9dd8cdd5b83a6a32ff6"
 
 const wooApi = axios.create({
   baseURL: WOO_API_BASE,
@@ -146,7 +146,7 @@ export async function getProducts(
 
     // Check if response.data is an array
     if (!response.data || !Array.isArray(response.data)) {
-      console.error("❌ API response is not an array:", response.data)
+      //console.error("❌ API response is not an array:", response.data)
       return []
     }
 
@@ -155,13 +155,13 @@ export async function getProducts(
     console.log(`✅ Fetched ${products.length} products`)
     return products
   } catch (error: any) {
-    console.error("❌ Error fetching products:", error.response?.data || error.message)
+   // console.error("❌ Error fetching products:", error.response?.data || error.message)
 
     // Log more details about the error
     if (error.response) {
-      console.error("Response status:", error.response.status)
-      console.error("Response headers:", error.response.headers)
-      console.error("Response data:", error.response.data)
+      // console.error("Response status:", error.response.status)
+      // console.error("Response headers:", error.response.headers)
+      // console.error("Response data:", error.response.data)
     }
 
     return []
@@ -209,18 +209,16 @@ export async function getCategories() {
     console.log(`✅ Fetched ${response.data.length} categories`)
     return response.data
   } catch (error: any) {
-    console.error("❌ Error fetching categories:", error.response?.data || error.message)
+   // console.error("❌ Error fetching categories:", error.response?.data || error.message)
     return []
   }
 }
 
-export async function createOrder(orderData: Order) {
+export async function createOrder(orderData: Order): Promise<any> {
   try {
-    console.log("🔍 Creating order")
 
     const response = await wooApi.post("/orders", orderData)
 
-    console.log(`✅ Order created: ${response.data.id}`)
     return response.data
   } catch (error: any) {
     console.error("❌ Error creating order:", error.response?.data || error.message)
@@ -244,7 +242,7 @@ export async function testApiConnection(): Promise<boolean> {
 
     return true
   } catch (error: any) {
-    console.error("❌ API connection failed:", error.response?.data || error.message)
+    //console.error("❌ API connection failed:", error.response?.data || error.message)
     return false
   }
 }

@@ -52,7 +52,7 @@ export default function CartPage() {
 
                     <div className="flex-1 min-w-0">
                       <Link href={`/product/${item.slug}`}>
-                        <h3 className="font-medium text-gray-900 hover:text-yellow-600 line-clamp-2">{item.name}</h3>
+                        <h3 className="font-medium text-gray-900 hover:text-yellow-500 line-clamp-2">{item.name}</h3>
                       </Link>
                       <p className="text-sm text-gray-500 mt-1">SAR {item.price} each</p>
                     </div>
@@ -61,13 +61,13 @@ export default function CartPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                        disabled={item.quantity <= 1}
+                        onClick={() => updateQuantity(item.item_key ?? "", Math.max(1, item.quantity - 1))}
+                        disabled={item.quantity <= 1 || !item.item_key}
                       >
                         <Minus className="h-4 w-4" />
                       </Button>
                       <span className="w-12 text-center">{item.quantity}</span>
-                      <Button variant="outline" size="sm" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+                      <Button variant="outline" size="sm" onClick={() => updateQuantity(item.item_key ?? "", item.quantity + 1)} disabled={!item.item_key}>
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
@@ -77,8 +77,9 @@ export default function CartPage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => removeItem(item.id)}
-                        className="text-yellow-600 hover:text-yellow-700 mt-1"
+                        onClick={() => removeItem(item.item_key ?? "")}
+                        className="text-yellow-500 hover:text-yellow-700 mt-1"
+                        disabled={!item.item_key}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -133,7 +134,7 @@ export default function CartPage() {
               </div>
             </div>
 
-            <Button asChild className="w-full bg-yellow-600 hover:bg-yellow-700" size="lg">
+            <Button asChild className="w-full bg-yellow-500 hover:bg-yellow-700" size="lg">
               <Link href="/checkout">Proceed to Checkout</Link>
             </Button>
 

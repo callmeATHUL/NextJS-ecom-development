@@ -42,7 +42,7 @@ export interface CartItem {
   }
   backorders: string
   cart_item_data: any[]
-  featuyellow_image: string
+  Featured_image: string
 }
 
 export interface Cart {

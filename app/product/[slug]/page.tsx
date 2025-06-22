@@ -37,14 +37,7 @@ export default function ProductPage() {
   const handleAddToCart = () => {
     if (!product) return
 
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      quantity,
-      image: product.images[0]?.src || "/placehold.jpg",
-      slug: product.slug,
-    })
+    addItem(product.id)
   }
 
   if (loading) {
@@ -91,7 +84,7 @@ export default function ProductPage() {
               fill
               className="object-cover"
             />
-            {isOnSale && <Badge className="absolute top-4 left-4 bg-yellow-600 text-white">Sale</Badge>}
+            {isOnSale && <Badge className="absolute top-4 left-4 bg-yellow-500 text-white">Sale</Badge>}
           </div>
 
           {product.images.length > 1 && (
@@ -101,7 +94,7 @@ export default function ProductPage() {
                   key={image.id}
                   onClick={() => setSelectedImage(index)}
                   className={`aspect-square relative overflow-hidden rounded-lg border-2 ${
-                    selectedImage === index ? "border-yellow-600" : "border-gray-200"
+                    selectedImage === index ? "border-yellow-500" : "border-gray-200"
                   }`}
                 >
                   <Image
@@ -123,7 +116,7 @@ export default function ProductPage() {
             <div className="flex items-center space-x-2 mb-4">
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <Star key={i} className="h-4 w-4 fill-yellow-500 text-yellow-500" />
                 ))}
               </div>
               <span className="text-sm text-gray-600">(24 reviews)</span>
@@ -131,7 +124,7 @@ export default function ProductPage() {
           </div>
 
           <div className="flex items-center space-x-4">
-            <span className="text-3xl font-bold text-yellow-600">SAR {displayPrice}</span>
+            <span className="text-3xl font-bold text-yellow-500">SAR {displayPrice}</span>
             {isOnSale && <span className="text-xl text-gray-500 line-through">SAR {product.regular_price}</span>}
           </div>
 
@@ -187,7 +180,7 @@ export default function ProductPage() {
               <Button
                 onClick={handleAddToCart}
                 disabled={product.stock_status === "outofstock"}
-                className="flex-1 bg-yellow-600 hover:bg-yellow-700"
+                className="flex-1 bg-yellow-500 hover:bg-yellow-700"
                 size="lg"
               >
                 <ShoppingCart className="h-5 w-5 mr-2" />
