@@ -50,7 +50,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <Link href={`/product/${product.slug}`}>
         <div className="aspect-square relative overflow-hidden bg-gray-100">
           <Image
-            src={product.images[0]?.src || "/placehold.jpg?height=400&width=400"}
+            src={product.images[0]?.src || "/placeholder.jpg?height=400&width=400"}
             alt={product.name}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"

@@ -43,7 +43,7 @@ export default function CartPage() {
                   <div key={item.id} className="flex items-center space-x-4 py-4 border-b last:border-b-0">
                     <div className="relative w-20 h-20 flex-shrink-0">
                       <Image
-                        src={item.image || "/placehold.jpg"}
+                        src={item.image || "/placeholder.jpg"}
                         alt={item.name}
                         fill
                         className="object-cover rounded-lg"

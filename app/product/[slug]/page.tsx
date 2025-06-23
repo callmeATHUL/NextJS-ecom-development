@@ -79,7 +79,7 @@ export default function ProductPage() {
         <div className="space-y-4">
           <div className="aspect-square relative overflow-hidden rounded-lg bg-gray-100">
             <Image
-              src={product.images[selectedImage]?.src || "/placehold.jpg"}
+              src={product.images[selectedImage]?.src || "/placeholder.jpg"}
               alt={product.name}
               fill
               className="object-cover"
@@ -98,7 +98,7 @@ export default function ProductPage() {
                   }`}
                 >
                   <Image
-                    src={image.src || "/placehold.jpg"}
+                    src={image.src || "/placeholder.jpg"}
                     alt={`${product.name} ${index + 1}`}
                     fill
                     className="object-cover"
