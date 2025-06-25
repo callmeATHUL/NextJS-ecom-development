@@ -5,20 +5,12 @@ import {
   removeFromCart,
   updateCartItem,
   getCart,
-  clearCart as clearCoCart,
-  testCoCartConnection,
-} from "./cart-api"
-import type { Cart, CartItem as CoCartItem } from "./cart-api"
-
-interface CartItem {
-  id: number
-  name: string
-  price: string
-  quantity: number
-  image: string
-  slug: string
-  item_key?: string
-}
+  clearCart as clearStoreCart,
+  testStoreApiConnection,
+  applyCoupon,
+  removeCoupon,
+} from "./cart-api-fixed"
+import type { Cart, CartItem } from "./cart-api-fixed"
 
 interface CartStore {
   items: CartItem[]
@@ -32,6 +24,8 @@ interface CartStore {
   clearCart: () => Promise<void>
   refreshCart: () => Promise<void>
   testConnection: () => Promise<void>
+  applyCoupon: (couponCode: string) => Promise<void>
+  removeCoupon: (couponCode: string) => Promise<void>
   getTotalItems: () => number
   getTotalPrice: () => number
   clearError: () => void
@@ -49,8 +43,10 @@ export const useCartStore = create<CartStore>()(
       addItem: async (productId: number, quantity = 1) => {
         set({ loading: true, error: null })
         try {
+          console.log(`🛒 Adding item ${productId} with quantity ${quantity}`)
           await addToCart(productId, quantity)
           await get().refreshCart()
+          console.log(`✅ Successfully added item ${productId} to cart`)
         } catch (error: any) {
           console.error("Failed to add item to cart:", error)
           set({ error: error.message })
@@ -63,8 +59,10 @@ export const useCartStore = create<CartStore>()(
       removeItem: async (itemKey: string) => {
         set({ loading: true, error: null })
         try {
+          console.log(`🗑️ Removing item ${itemKey}`)
           await removeFromCart(itemKey)
           await get().refreshCart()
+          console.log(`✅ Successfully removed item ${itemKey}`)
         } catch (error: any) {
           console.error("Failed to remove item from cart:", error)
           set({ error: error.message })
@@ -77,8 +75,10 @@ export const useCartStore = create<CartStore>()(
       updateQuantity: async (itemKey: string, quantity: number) => {
         set({ loading: true, error: null })
         try {
+          console.log(`📝 Updating item ${itemKey} quantity to ${quantity}`)
           await updateCartItem(itemKey, quantity)
           await get().refreshCart()
+          console.log(`✅ Successfully updated item ${itemKey} quantity`)
         } catch (error: any) {
           console.error("Failed to update cart item:", error)
           set({ error: error.message })
@@ -91,8 +91,10 @@ export const useCartStore = create<CartStore>()(
       clearCart: async () => {
         set({ loading: true, error: null })
         try {
-          await clearCoCart()
+          console.log(`🧹 Clearing cart`)
+          await clearStoreCart()
           set({ items: [], cart: null })
+          console.log(`✅ Successfully cleared cart`)
         } catch (error: any) {
           console.error("Failed to clear cart:", error)
           set({ error: error.message })
@@ -104,20 +106,29 @@ export const useCartStore = create<CartStore>()(
 
       refreshCart: async () => {
         try {
+          console.log(`🔄 Refreshing cart`)
           const cart = await getCart()
           if (cart) {
-            const items: CartItem[] = cart.items.map((item: CoCartItem) => ({
+            const items: CartItem[] = cart.items.map((item) => ({
+              ...item,
               id: item.id,
               name: item.name,
-              price: item.price,
-              quantity: item.quantity.value,
-              image: item.Featured_image,
-              slug: item.slug,
-              item_key: item.item_key,
+              price: item.price || item.prices?.price || "0",
+              quantity: {
+                value: item.quantity,
+                min_purchase: 1,
+                max_purchase: 999,
+              },
+              Featured_image: item.images?.[0]?.src || item.Featured_image || "",
+              slug: item.slug || item.permalink?.split('/').filter(Boolean).pop() || "",
+              item_key: item.key || item.item_key,
+              key: item.key,
             }))
             set({ cart, items, connected: true, error: null })
+            console.log(`✅ Cart refreshed with ${items.length} items`)
           } else {
             set({ cart: null, items: [], connected: false })
+            console.log(`📭 Cart is empty or unavailable`)
           }
         } catch (error: any) {
           console.error("Failed to refresh cart:", error)
@@ -127,10 +138,45 @@ export const useCartStore = create<CartStore>()(
 
       testConnection: async () => {
         try {
-          const isConnected = await testCoCartConnection()
+          console.log(`🔍 Testing cart API connection`)
+          const isConnected = await testStoreApiConnection()
           set({ connected: isConnected, error: isConnected ? null : "Cart service unavailable" })
+          console.log(`${isConnected ? '✅' : '❌'} Cart API connection ${isConnected ? 'successful' : 'failed'}`)
         } catch (error: any) {
           set({ connected: false, error: error.message })
+          console.error(`❌ Cart API connection test failed:`, error)
+        }
+      },
+
+      applyCoupon: async (couponCode: string) => {
+        set({ loading: true, error: null })
+        try {
+          console.log(`🎫 Applying coupon: ${couponCode}`)
+          await applyCoupon(couponCode)
+          await get().refreshCart()
+          console.log(`✅ Successfully applied coupon: ${couponCode}`)
+        } catch (error: any) {
+          console.error("Failed to apply coupon:", error)
+          set({ error: error.message })
+          throw error
+        } finally {
+          set({ loading: false })
+        }
+      },
+
+      removeCoupon: async (couponCode: string) => {
+        set({ loading: true, error: null })
+        try {
+          console.log(`🎫 Removing coupon: ${couponCode}`)
+          await removeCoupon(couponCode)
+          await get().refreshCart()
+          console.log(`✅ Successfully removed coupon: ${couponCode}`)
+        } catch (error: any) {
+          console.error("Failed to remove coupon:", error)
+          set({ error: error.message })
+          throw error
+        } finally {
+          set({ loading: false })
         }
       },
 
@@ -150,7 +196,16 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: "cart-storage",
-      partialize: (state) => ({ items: state.items }), // Only persist items
+      partialize: (state) => ({ 
+        // Only persist minimal data, not the full cart state
+        items: state.items.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          key: item.key || item.item_key,
+        }))
+      }),
     },
   ),
 )
@@ -158,13 +213,20 @@ export const useCartStore = create<CartStore>()(
 // Initialize cart on app start (only in browser)
 if (typeof window !== "undefined") {
   // Test connection first, then refresh cart
+  console.log("🚀 Initializing cart store...")
   useCartStore
     .getState()
     .testConnection()
     .then(() => {
       const { connected } = useCartStore.getState()
       if (connected) {
+        console.log("🔄 Cart connected, refreshing cart data...")
         useCartStore.getState().refreshCart()
+      } else {
+        console.log("❌ Cart not connected, will use local storage only")
       }
+    })
+    .catch((error) => {
+      console.error("❌ Cart initialization failed:", error)
     })
 }
