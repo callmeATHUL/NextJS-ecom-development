@@ -1,12 +1,52 @@
 import axios from 'axios'
 
 // WooCommerce Store Configuration
+// Note: APIs are only accessible from sultanafitness.store domain
 const STORE_URL = process.env.NEXT_PUBLIC_WOOCOMMERCE_STORE_URL || 'https://sultanafitness.store'
 const CONSUMER_KEY = process.env.WOOCOMMERCE_CONSUMER_KEY || 'ck_fe2d2056ee594ff1c4693db397426f6a1425d4ec'
 const CONSUMER_SECRET = process.env.WOOCOMMERCE_CONSUMER_SECRET || 'cs_f6f4f25a3aa73c7db791cf2816fb5a1bc5bb34a7'
 
+// Validate configuration
+if (typeof window === 'undefined') { // Server-side only
+  if (!STORE_URL || !CONSUMER_KEY || !CONSUMER_SECRET) {
+    console.error('❌ Missing WooCommerce API configuration');
+    console.error('Required environment variables:');
+    console.error('- NEXT_PUBLIC_WOOCOMMERCE_STORE_URL');
+    console.error('- WOOCOMMERCE_CONSUMER_KEY');
+    console.error('- WOOCOMMERCE_CONSUMER_SECRET');
+  } else {
+    console.log('✅ WooCommerce configuration loaded:', {
+      storeUrl: STORE_URL,
+      consumerKeyPrefix: CONSUMER_KEY.substring(0, 10) + '...',
+      hasSecret: !!CONSUMER_SECRET
+    });
+  }
+}
+
 // Base API URL
 const API_BASE_URL = `${STORE_URL}/wp-json/wc/v3`
+
+// Domain validation helper
+export function validateApiDomain(): { isValid: boolean; message: string } {
+  if (!STORE_URL || !CONSUMER_KEY || !CONSUMER_SECRET) {
+    return {
+      isValid: false,
+      message: 'Missing required API configuration. Check environment variables.'
+    }
+  }
+  
+  if (!STORE_URL.includes('sultanafitness.store')) {
+    return {
+      isValid: false,
+      message: 'API domain must be sultanafitness.store for proper functionality.'
+    }
+  }
+  
+  return {
+    isValid: true,
+    message: 'API configuration is valid.'
+  }
+}
 
 // Create axios instance with authentication
 const wooCommerceApi = axios.create({
