@@ -135,7 +135,7 @@ export interface StoreCart {
 }
 
 // Legacy interfaces for backward compatibility
-export interface CartItem extends StoreCartItem {
+export interface CartItem extends Omit<StoreCartItem, "quantity"> {
   item_key: string
   Featured_image: string
   slug: string
@@ -147,7 +147,8 @@ export interface CartItem extends StoreCartItem {
   }
 }
 
-export interface Cart extends StoreCart {
+export interface Cart extends Omit<StoreCart, "items"> {
+  items: CartItem[]
   cart_hash: string
   cart_key: string
   currency: {
@@ -170,6 +171,7 @@ export interface Cart extends StoreCart {
 function convertStoreCartToLegacy(storeCart: StoreCart): Cart {
   return {
     ...storeCart,
+    items: storeCart.items.map(convertStoreItemToLegacy),
     cart_hash: storeCart.items.length > 0 ? "cart_has_items" : "No items in cart so no hash",
     cart_key: `store_${Date.now()}`,
     currency: {
@@ -187,16 +189,24 @@ function convertStoreCartToLegacy(storeCart: StoreCart): Cart {
     },
     item_count: storeCart.items_count,
     totals: {
-      subtotal: storeCart.totals.total_items,
-      subtotal_tax: storeCart.totals.total_items_tax,
-      fee_total: storeCart.totals.total_fees,
-      fee_tax: storeCart.totals.total_fees_tax,
-      discount_total: storeCart.totals.total_discount,
-      discount_tax: storeCart.totals.total_discount_tax,
-      shipping_total: storeCart.totals.total_shipping,
-      shipping_tax: storeCart.totals.total_shipping_tax,
-      total: storeCart.totals.total_price,
+      total_items: storeCart.totals.total_items,
+      total_items_tax: storeCart.totals.total_items_tax,
+      total_fees: storeCart.totals.total_fees,
+      total_fees_tax: storeCart.totals.total_fees_tax,
+      total_discount: storeCart.totals.total_discount,
+      total_discount_tax: storeCart.totals.total_discount_tax,
+      total_shipping: storeCart.totals.total_shipping,
+      total_shipping_tax: storeCart.totals.total_shipping_tax,
+      total_price: storeCart.totals.total_price,
       total_tax: storeCart.totals.total_tax,
+      tax_lines: storeCart.totals.tax_lines,
+      currency_code: storeCart.totals.currency_code,
+      currency_symbol: storeCart.totals.currency_symbol,
+      currency_minor_unit: storeCart.totals.currency_minor_unit,
+      currency_decimal_separator: storeCart.totals.currency_decimal_separator,
+      currency_thousand_separator: storeCart.totals.currency_thousand_separator,
+      currency_prefix: storeCart.totals.currency_prefix,
+      currency_suffix: storeCart.totals.currency_suffix,
     }
   }
 }

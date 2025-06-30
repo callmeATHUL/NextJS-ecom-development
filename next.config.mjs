@@ -1,3 +1,9 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Enable experimental features for better performance
@@ -11,7 +17,7 @@ const nextConfig = {
     // Allow images from your WooCommerce domain and other sources
     domains: [
       'www.sultanafitness.store',
-      'sultanafitness.store', 
+      'sultanafitness.store',
       'sulthanafitness.shop',
       'images.unsplash.com',
       'via.placeholder.com',
@@ -33,7 +39,9 @@ const nextConfig = {
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
-            value: '*', // In production, replace with your specific domains
+            value: process.env.NODE_ENV === 'development'
+              ? '*'
+              : 'https://sulthanafitness.shop',
           },
           {
             key: 'Access-Control-Allow-Methods',
@@ -123,7 +131,7 @@ const nextConfig = {
     // Add aliases for cleaner imports
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@': require('path').resolve(__dirname),
+      '@': path.resolve(__dirname),
     };
 
     return config;
@@ -131,9 +139,6 @@ const nextConfig = {
 
   // Standalone build for better deployment performance
   output: 'standalone',
-
-  // Enable SWC minification for faster builds
-  swcMinify: true,
 
   // Compiler options
   compiler: {

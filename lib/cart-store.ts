@@ -9,8 +9,8 @@ import {
   testStoreApiConnection,
   applyCoupon,
   removeCoupon,
-} from "./cart-api-fixed"
-import type { Cart, CartItem } from "./cart-api-fixed"
+} from "./cart-api"
+import type { Cart, CartItem } from "./cart-api"
 
 interface CartStore {
   items: CartItem[]
@@ -109,23 +109,8 @@ export const useCartStore = create<CartStore>()(
           console.log(`🔄 Refreshing cart`)
           const cart = await getCart()
           if (cart) {
-            const items: CartItem[] = cart.items.map((item) => ({
-              ...item,
-              id: item.id,
-              name: item.name,
-              price: item.price || item.prices?.price || "0",
-              quantity: {
-                value: item.quantity,
-                min_purchase: 1,
-                max_purchase: 999,
-              },
-              Featured_image: item.images?.[0]?.src || item.Featured_image || "",
-              slug: item.slug || item.permalink?.split('/').filter(Boolean).pop() || "",
-              item_key: item.key || item.item_key,
-              key: item.key,
-            }))
-            set({ cart, items, connected: true, error: null })
-            console.log(`✅ Cart refreshed with ${items.length} items`)
+            set({ cart, items: cart.items, connected: true, error: null })
+            console.log(`✅ Cart refreshed with ${cart.items.length} items`)
           } else {
             set({ cart: null, items: [], connected: false })
             console.log(`📭 Cart is empty or unavailable`)
@@ -187,7 +172,7 @@ export const useCartStore = create<CartStore>()(
 
       getTotalPrice: () => {
         const { cart } = get()
-        return cart ? Number.parseFloat(cart.totals.total) : 0
+        return cart ? Number.parseFloat(cart.totals.total_price) : 0
       },
 
       clearError: () => {
@@ -196,19 +181,18 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: "cart-storage",
-      partialize: (state) => ({ 
-        // Only persist minimal data, not the full cart state
-        items: state.items.map(item => ({
+      partialize: (state: CartStore) => ({
+        items: state.items.map((item) => ({
           id: item.id,
           name: item.name,
-          price: item.price,
+          price: item.prices.price,
           quantity: item.quantity,
-          key: item.key || item.item_key,
-        }))
+          key: item.key,
+        })),
       }),
-    },
-  ),
-)
+    }
+  )
+);
 
 // Initialize cart on app start (only in browser)
 if (typeof window !== "undefined") {

@@ -225,6 +225,73 @@ export interface GetProductsParams {
   order?: 'asc' | 'desc'
 }
 
+export interface Order {
+  id: number;
+  parent_id: number;
+  status: string;
+  currency: string;
+  version: string;
+  prices_include_tax: boolean;
+  date_created: string;
+  date_modified: string;
+  discount_total: string;
+  discount_tax: string;
+  shipping_total: string;
+  shipping_tax: string;
+  cart_tax: string;
+  total: string;
+  total_tax: string;
+  customer_id: number;
+  order_key: string;
+  billing: {
+    first_name: string;
+    last_name: string;
+    company: string;
+    address_1: string;
+    address_2: string;
+    city: string;
+    state: string;
+    postcode: string;
+    country: string;
+    email: string;
+    phone: string;
+  };
+  shipping: {
+    first_name: string;
+    last_name: string;
+    company: string;
+    address_1: string;
+    address_2: string;
+    city: string;
+    state: string;
+    postcode: string;
+    country: string;
+  };
+  payment_method: string;
+  payment_method_title: string;
+  transaction_id: string;
+  customer_ip_address: string;
+  customer_user_agent: string;
+  created_via: string;
+  customer_note: string;
+  date_completed: string | null;
+  date_paid: string | null;
+  cart_hash: string;
+  number: string;
+  meta_data: any[];
+  line_items: LineItem[];
+  tax_lines: any[];
+  shipping_lines: any[];
+  fee_lines: any[];
+  coupon_lines: any[];
+  refunds: any[];
+}
+
+export interface LineItem {
+  product_id: number;
+  quantity: number;
+}
+
 // API Functions
 
 /**
@@ -442,6 +509,24 @@ export async function getRelatedProducts(productId: number, limit: number = 4): 
   }
 }
 
+/**
+ * Create an order
+ */
+export async function createOrder(orderData: any): Promise<Order> {
+  try {
+    console.log('📦 Creating order with data:', orderData)
+    const response = await wooCommerceApi.post('/orders', orderData)
+    console.log(`✅ Successfully created order: ${response.data.id}`)
+    return response.data
+  } catch (error: any) {
+    console.error('❌ Error creating order:', error.message)
+    if (error.response) {
+      console.error('📄 Response data:', error.response.data)
+    }
+    throw new Error(`Failed to create order: ${error.message}`)
+  }
+}
+
 // Export configuration for debugging
 export const config = {
   storeUrl: STORE_URL,
@@ -461,5 +546,6 @@ export default {
   getSaleProducts,
   getProductsByCategory,
   getRelatedProducts,
+  createOrder,
   config,
 }
