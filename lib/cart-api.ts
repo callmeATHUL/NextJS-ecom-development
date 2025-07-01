@@ -134,98 +134,9 @@ export interface StoreCart {
   extensions: any
 }
 
-// Legacy interfaces for backward compatibility
-export interface CartItem extends Omit<StoreCartItem, "quantity"> {
-  item_key: string
-  Featured_image: string
-  slug: string
-  price: string
-  quantity: {
-    value: number
-    min_purchase: number
-    max_purchase: number
-  }
-}
-
-export interface Cart extends Omit<StoreCart, "items"> {
-  items: CartItem[]
-  cart_hash: string
-  cart_key: string
-  currency: {
-    currency_code: string
-    currency_symbol: string
-    currency_minor_unit: number
-    currency_decimal_separator: string
-    currency_thousand_separator: string
-    currency_prefix: string
-    currency_suffix: string
-  }
-  customer: {
-    billing_address: any
-    shipping_address: any
-  }
-  item_count: number
-}
-
-// Convert Store API response to legacy format for backward compatibility
-function convertStoreCartToLegacy(storeCart: StoreCart): Cart {
-  return {
-    ...storeCart,
-    items: storeCart.items.map(convertStoreItemToLegacy),
-    cart_hash: storeCart.items.length > 0 ? "cart_has_items" : "No items in cart so no hash",
-    cart_key: `store_${Date.now()}`,
-    currency: {
-      currency_code: storeCart.totals.currency_code,
-      currency_symbol: storeCart.totals.currency_symbol,
-      currency_minor_unit: storeCart.totals.currency_minor_unit,
-      currency_decimal_separator: storeCart.totals.currency_decimal_separator,
-      currency_thousand_separator: storeCart.totals.currency_thousand_separator,
-      currency_prefix: storeCart.totals.currency_prefix,
-      currency_suffix: storeCart.totals.currency_suffix,
-    },
-    customer: {
-      billing_address: storeCart.billing_address,
-      shipping_address: storeCart.shipping_address,
-    },
-    item_count: storeCart.items_count,
-    totals: {
-      total_items: storeCart.totals.total_items,
-      total_items_tax: storeCart.totals.total_items_tax,
-      total_fees: storeCart.totals.total_fees,
-      total_fees_tax: storeCart.totals.total_fees_tax,
-      total_discount: storeCart.totals.total_discount,
-      total_discount_tax: storeCart.totals.total_discount_tax,
-      total_shipping: storeCart.totals.total_shipping,
-      total_shipping_tax: storeCart.totals.total_shipping_tax,
-      total_price: storeCart.totals.total_price,
-      total_tax: storeCart.totals.total_tax,
-      tax_lines: storeCart.totals.tax_lines,
-      currency_code: storeCart.totals.currency_code,
-      currency_symbol: storeCart.totals.currency_symbol,
-      currency_minor_unit: storeCart.totals.currency_minor_unit,
-      currency_decimal_separator: storeCart.totals.currency_decimal_separator,
-      currency_thousand_separator: storeCart.totals.currency_thousand_separator,
-      currency_prefix: storeCart.totals.currency_prefix,
-      currency_suffix: storeCart.totals.currency_suffix,
-    }
-  }
-}
-
-// Convert Store API item to legacy format
-function convertStoreItemToLegacy(storeItem: StoreCartItem): CartItem {
-  return {
-    ...storeItem,
-    item_key: storeItem.key,
-    Featured_image: storeItem.images[0]?.src || "",
-    slug: storeItem.permalink.split('/').filter(Boolean).pop() || "",
-    price: storeItem.prices.price,
-    quantity: {
-      value: storeItem.quantity,
-      min_purchase: 1,
-      max_purchase: 999,
-    }
-  }
-}
+// Type aliases for clarity
+export type CartItem = StoreCartItem
+export type Cart = StoreCart
 
 // Add request interceptor for logging
 storeApi.interceptors.request.use(
@@ -274,15 +185,11 @@ export async function testStoreApiConnection(): Promise<boolean> {
 export async function getCart(): Promise<Cart | null> {
   try {
     console.log("🛒 Fetching cart contents via Store API")
-
-    const response = await storeApi.get("/cart")
+    const response = await storeApi.get<Cart>("/cart")
     console.log("✅ Cart fetched successfully")
-    
-    // Convert to legacy format for backward compatibility
-    return convertStoreCartToLegacy(response.data)
+    return response.data
   } catch (error: any) {
     console.error("❌ Error fetching cart:", error.message)
-
     if (error.code === "ECONNABORTED") {
       console.error("Request timeout - Store API is taking too long to respond")
     } else if (error.code === "ERR_NETWORK") {
@@ -291,41 +198,22 @@ export async function getCart(): Promise<Cart | null> {
       console.error("HTTP Error:", error.response.status, error.response.statusText)
       console.error("Response data:", error.response.data)
     }
-
     return null
   }
 }
 
 // Add item to cart using Store API
-export async function addToCart(productId: number, quantity = 1): Promise<CartItem | null> {
+export async function addToCart(productId: number, quantity = 1): Promise<Cart> {
   try {
     console.log(`🛒 Adding product ${productId} (qty: ${quantity}) to cart via Store API`)
-
-    // Test connection first
-    const isConnected = await testStoreApiConnection()
-    if (!isConnected) {
-      throw new Error("Store API is not available")
-    }
-
-    const response = await storeApi.post("/cart/add-item", {
+    const response = await storeApi.post<Cart>("/cart/add-item", {
       id: productId,
       quantity: quantity,
     })
-
     console.log("✅ Product added to cart successfully")
-    
-    // Store API returns the updated cart, we need to find the added item
-    const updatedCart = response.data as StoreCart
-    const addedItem = updatedCart.items.find(item => item.id === productId)
-    
-    if (addedItem) {
-      return convertStoreItemToLegacy(addedItem)
-    }
-    
-    return null
+    return response.data
   } catch (error: any) {
     console.error("❌ Error adding product to cart:", error.message)
-
     if (error.response?.status === 404) {
       throw new Error("Product not found")
     } else if (error.response?.status === 400) {
@@ -339,26 +227,15 @@ export async function addToCart(productId: number, quantity = 1): Promise<CartIt
 }
 
 // Update cart item quantity using Store API
-export async function updateCartItem(itemKey: string, quantity: number): Promise<CartItem | null> {
+export async function updateCartItem(itemKey: string, quantity: number): Promise<Cart> {
   try {
     console.log(`🛒 Updating cart item ${itemKey} to quantity ${quantity}`)
-
-    const response = await storeApi.post("/cart/update-item", {
+    const response = await storeApi.post<Cart>("/cart/update-item", {
       key: itemKey,
       quantity: quantity,
     })
-
     console.log("✅ Cart item updated successfully")
-    
-    // Find the updated item in the response
-    const updatedCart = response.data as StoreCart
-    const updatedItem = updatedCart.items.find(item => item.key === itemKey)
-    
-    if (updatedItem) {
-      return convertStoreItemToLegacy(updatedItem)
-    }
-    
-    return null
+    return response.data
   } catch (error: any) {
     console.error("❌ Error updating cart item:", error.message)
     throw new Error(error.response?.data?.message || "Failed to update cart item")
@@ -366,16 +243,14 @@ export async function updateCartItem(itemKey: string, quantity: number): Promise
 }
 
 // Remove item from cart using Store API
-export async function removeFromCart(itemKey: string): Promise<boolean> {
+export async function removeFromCart(itemKey: string): Promise<Cart> {
   try {
     console.log(`🛒 Removing cart item ${itemKey}`)
-
-    await storeApi.post("/cart/remove-item", {
+    const response = await storeApi.post<Cart>("/cart/remove-item", {
       key: itemKey,
     })
-
     console.log("✅ Cart item removed successfully")
-    return true
+    return response.data
   } catch (error: any) {
     console.error("❌ Error removing cart item:", error.message)
     throw new Error(error.response?.data?.message || "Failed to remove cart item")
@@ -383,24 +258,12 @@ export async function removeFromCart(itemKey: string): Promise<boolean> {
 }
 
 // Clear entire cart using Store API
-export async function clearCart(): Promise<boolean> {
+export async function clearCart(): Promise<Cart> {
   try {
     console.log("🛒 Clearing entire cart")
-
-    // Store API doesn't have a direct clear endpoint, so we remove all items
-    const cart = await getCart()
-    if (!cart || cart.items.length === 0) {
-      console.log("✅ Cart is already empty")
-      return true
-    }
-
-    // Remove each item individually
-    for (const item of cart.items) {
-      await removeFromCart(item.key || item.item_key)
-    }
-
+    const response = await storeApi.post<Cart>("/cart/clear")
     console.log("✅ Cart cleared successfully")
-    return true
+    return response.data
   } catch (error: any) {
     console.error("❌ Error clearing cart:", error.message)
     throw new Error(error.response?.data?.message || "Failed to clear cart")
@@ -411,7 +274,7 @@ export async function clearCart(): Promise<boolean> {
 export async function getCartItemCount(): Promise<number> {
   try {
     const cart = await getCart()
-    return cart?.item_count || 0
+    return cart?.items_count || 0
   } catch (error: any) {
     console.error("❌ Error getting cart item count:", error)
     return 0

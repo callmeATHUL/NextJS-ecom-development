@@ -297,7 +297,7 @@ export interface LineItem {
 /**
  * Test WooCommerce API connection
  */
-export async function testApiConnection(): Promise<boolean> {
+export async function testApiConnection(): Promise<{ success: boolean, message: string, data?: any }> {
   try {
     console.log('🔍 Testing WooCommerce API connection...')
     console.log(`📍 Store URL: ${STORE_URL}`)
@@ -307,31 +307,31 @@ export async function testApiConnection(): Promise<boolean> {
       params: { per_page: 1 }
     })
     
-    console.log('✅ WooCommerce API connection successful!')
-    console.log(`📊 Response status: ${response.status}`)
-    return true
+    const message = `✅ WooCommerce API connection successful! (Status: ${response.status})`
+    console.log(message)
+    return { success: true, message }
   } catch (error: any) {
-    console.error('❌ WooCommerce API connection failed!')
-    
+    let message = '❌ WooCommerce API connection failed!';
+    let data = null;
+
     if (error.code === 'ECONNABORTED') {
-      console.error('⏰ Request timeout - API is taking too long to respond')
+      message += ' Request timeout - API is taking too long to respond.'
     } else if (error.code === 'ENOTFOUND' || error.code === 'ERR_NETWORK') {
-      console.error('🌐 Network error - Cannot reach the store')
-      console.error(`🔗 Trying to connect to: ${STORE_URL}`)
+      message += ` Network error - Cannot reach the store at ${STORE_URL}.`
     } else if (error.response) {
-      console.error(`📋 HTTP Error: ${error.response.status} ${error.response.statusText}`)
-      console.error('📄 Response data:', error.response.data)
-      
+      message += ` HTTP Error: ${error.response.status} ${error.response.statusText}.`
+      data = error.response.data;
       if (error.response.status === 401) {
-        console.error('🔐 Authentication failed - Check your consumer key and secret')
+        message += ' Authentication failed - Check your consumer key and secret.'
       } else if (error.response.status === 404) {
-        console.error('🔍 API endpoint not found - Check if WooCommerce REST API is enabled')
+        message += ' API endpoint not found - Check if WooCommerce REST API is enabled.'
       }
     } else {
-      console.error('❓ Unknown error:', error.message)
+      message += ` Unknown error: ${error.message}.`
     }
     
-    return false
+    console.error(message, data ? { data } : '');
+    return { success: false, message, data }
   }
 }
 
@@ -515,7 +515,7 @@ export async function getRelatedProducts(productId: number, limit: number = 4): 
 export async function createOrder(orderData: any): Promise<Order> {
   try {
     console.log('📦 Creating order with data:', orderData)
-    const response = await wooCommerceApi.post('/orders', orderData)
+    const response = await wooCommerceApi.post<Order>('/orders', orderData)
     console.log(`✅ Successfully created order: ${response.data.id}`)
     return response.data
   } catch (error: any) {
@@ -524,6 +524,24 @@ export async function createOrder(orderData: any): Promise<Order> {
       console.error('📄 Response data:', error.response.data)
     }
     throw new Error(`Failed to create order: ${error.message}`)
+  }
+}
+
+/**
+ * Get a single order by ID
+ */
+export async function getOrder(orderId: number): Promise<Order | null> {
+  try {
+    console.log(`🔍 Fetching order with ID: ${orderId}`)
+    const response = await wooCommerceApi.get<Order>(`/orders/${orderId}`)
+    console.log(`✅ Successfully fetched order: ${response.data.id}`)
+    return response.data
+  } catch (error: any) {
+    console.error(`❌ Error fetching order ${orderId}:`, error.message)
+    if (error.response?.status === 404) {
+      return null
+    }
+    throw new Error(`Failed to fetch order: ${error.message}`)
   }
 }
 
@@ -547,5 +565,6 @@ export default {
   getProductsByCategory,
   getRelatedProducts,
   createOrder,
+  getOrder,
   config,
 }

@@ -44,8 +44,8 @@ export const useCartStore = create<CartStore>()(
         set({ loading: true, error: null })
         try {
           console.log(`🛒 Adding item ${productId} with quantity ${quantity}`)
-          await addToCart(productId, quantity)
-          await get().refreshCart()
+          const updatedCart = await addToCart(productId, quantity)
+          set({ cart: updatedCart, items: updatedCart.items })
           console.log(`✅ Successfully added item ${productId} to cart`)
         } catch (error: any) {
           console.error("Failed to add item to cart:", error)
@@ -60,8 +60,8 @@ export const useCartStore = create<CartStore>()(
         set({ loading: true, error: null })
         try {
           console.log(`🗑️ Removing item ${itemKey}`)
-          await removeFromCart(itemKey)
-          await get().refreshCart()
+          const updatedCart = await removeFromCart(itemKey)
+          set({ cart: updatedCart, items: updatedCart.items })
           console.log(`✅ Successfully removed item ${itemKey}`)
         } catch (error: any) {
           console.error("Failed to remove item from cart:", error)
@@ -76,8 +76,8 @@ export const useCartStore = create<CartStore>()(
         set({ loading: true, error: null })
         try {
           console.log(`📝 Updating item ${itemKey} quantity to ${quantity}`)
-          await updateCartItem(itemKey, quantity)
-          await get().refreshCart()
+          const updatedCart = await updateCartItem(itemKey, quantity)
+          set({ cart: updatedCart, items: updatedCart.items })
           console.log(`✅ Successfully updated item ${itemKey} quantity`)
         } catch (error: any) {
           console.error("Failed to update cart item:", error)
@@ -92,8 +92,8 @@ export const useCartStore = create<CartStore>()(
         set({ loading: true, error: null })
         try {
           console.log(`🧹 Clearing cart`)
-          await clearStoreCart()
-          set({ items: [], cart: null })
+          const updatedCart = await clearStoreCart()
+          set({ cart: updatedCart, items: updatedCart.items })
           console.log(`✅ Successfully cleared cart`)
         } catch (error: any) {
           console.error("Failed to clear cart:", error)
@@ -167,7 +167,7 @@ export const useCartStore = create<CartStore>()(
 
       getTotalItems: () => {
         const { cart } = get()
-        return cart?.item_count || 0
+        return cart?.items_count || 0
       },
 
       getTotalPrice: () => {
