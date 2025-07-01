@@ -24,7 +24,7 @@ export default async function HomePage() {
 
   try {
     // Test API connection first
-    apiConnected = await testApiConnection()
+    apiConnected = (await testApiConnection()).success
 
     if (apiConnected) {
       FeaturedProducts = await getProducts({ per_page: 8 })

@@ -12,7 +12,10 @@ export const metadata: Metadata = {
   description:
     "Transform your fitness journey with premium equipment and accessories from Sulthana Fitness Store. Shop cardio machines, strength training gear, and fitness accessories.",
   keywords: "fitness equipment, gym equipment, cardio machines, strength training, fitness accessories, Saudi Arabia",
-    generator: 'v0.dev'
+    generator: 'v0.dev',
+  icons: {
+    icon: '/placeholder-logo.png',
+  },
 }
 
 export default function RootLayout({

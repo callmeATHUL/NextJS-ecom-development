@@ -1,0 +1,366 @@
+
+#
+# Block 1: Redirects all non-www and HTTP traffic to https://www.sultanafitness.store
+server {
+    listen 80;
+    listen [::]:80;
+    server_name sultanafitness.store www.sultanafitness.store;
+    return 301 https://www.sultanafitness.store$request_uri;
+}
+
+# Block 2: Main server configuration for your site
+server {
+    listen 443 quic;
+    listen 443 ssl;
+    listen [::]:443 quic;
+    listen [::]:443 ssl;
+    http2 on;
+    http3 off;
+
+    server_name www.sultanafitness.store www1.sultanafitness.store;
+    root /home/sultanafitness/htdocs/www.sultanafitness.store;
+
+    # SSL Configuration
+    ssl_certificate_key /etc/nginx/ssl-certificates/www.sultanafitness.store.key;
+    ssl_certificate /etc/nginx/ssl-certificates/www.sultanafitness.store.crt;
+
+    # Logging
+    access_log /home/sultanafitness/logs/nginx/access.log main;
+    error_log /home/sultanafitness/logs/nginx/error.log;
+
+    # Let's Encrypt challenge
+    location ~ /.well-known {
+        auth_basic off;
+        allow all;
+    }
+
+    # Deny access to sensitive files
+    location ~ /\.git { deny all; }
+    location = /xmlrpc.php { deny all; }
+
+    # ------------------- START: CORS FIX FOR WOOCOMMERCE API -------------------
+    # This new location block allows your Next.js app to access the API.
+    location /wp-json/ {
+        # Allow requests only from your frontend domain
+        add_header 'Access-Control-Allow-Origin' 'https://sulthanafitness.shop' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization' always;
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+
+        # Handle preflight OPTIONS requests from browsers
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Max-Age' 1728000;
+            add_header 'Content-Type' 'text/plain; charset=utf-8';
+            add_header 'Content-Length' 0;
+            return 204;
+        }
+
+        # Pass the API request to the backend service
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_hide_header X-Varnish;
+        proxy_redirect off;
+    }
+    # -------------------- END: CORS FIX FOR WOOCOMMERCE API --------------------
+
+    # Proxy for wp-admin and wp-login
+    location ~/(wp-admin/|wp-login.php) {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header Host $host;
+        proxy_max_temp_file_size 0;
+        proxy_connect_timeout      7200;
+        proxy_send_timeout         7200;
+        proxy_read_timeout         7200;
+        proxy_buffer_size          128k;
+        proxy_buffers              4 256k;
+           expires max;
+    access_log off;
+  }
+
+  if (-f $request_filename) {
+    break;
+  }
+}
+
+server {
+  listen 8080;
+  listen [::]:8080;
+  server_name www.sultanafitness.store www1.sultanafitness.store;
+  root /home/sultanafitness/htdocs/www.sultanafitness.store;
+
+  include /etc/nginx/global_settings;
+
+  try_files $uri $uri/ /index.php?$args;
+  index index.php index.html;
+
+  location ~ \.php$ {
+    include fastcgi_params;
+    fastcgi_intercept_errors on;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    try_files $uri =404;
+    fastcgi_read_timeout 3600;
+    fastcgi_send_timeout 3600;
+    fastcgi_param HTTPS "on";
+    fastcgi_param SERVER_PORT 443;
+    fastcgi_pass 127.0.0.1:15002;
+    fastcgi_param PHP_VALUE "
+error_log=/home/sultanafitness/logs/php/error.log;
+memory_limit=512M;
+max_execution_time=60;
+max_input_time=60;
+max_input_vars=10000;
+post_max_size=64M;
+upload_max_filesize=64M;
+date.timezone=UTC;
+display_errors=off;";
+  }
+
+  # WordPress Multisite Subdirectory
+  if (!-e $request_filename) {
+    rewrite /wp-admin$ https://$host$uri permanent;
+    rewrite ^/[_0-9a-zA-Z-]+(/wp-.*) $1 last;
+    rewrite ^/[_0-9a-zA-Z-]+(/.*\.php)$ $1 last;
+  }
+
+  if (-f $request_filename) {
+    break;
+  }
+}
+
+        proxy_busy_buffers_size    256k;
+        proxy_temp_file_write_size 256k;
+    }
+
+    # General proxy for all other requests
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_hide_header X-Varnish;
+        proxy_redirect off;
+        proxy_max_temp_file_size 0;
+        proxy_connect_timeout      720;
+        proxy_send_timeout         720;
+        proxy_read_timeout         720;
+        proxy_buffer_size          128k;
+        proxy_buffers              4 256k;
+        proxy_busy_buffers_size    256k;
+        proxy_temp_file_write_size 256k;
+    }
+
+    # Caching for static assets
+    location ~* ^.+\.(css|js|jpg|jpeg|gif|png|ico|gz|svg|svgz|ttf|otf|woff|woff2|eot|mp4|ogg|ogv|webm|webp|zip|swf|map)$ {
+        add_header Access-Control-Allow-Origin "*";
+        add_header alt-svc 'h3=":443"; ma=86400';
+        expires max;
+        access_log off;
+    }
+}
+
+# Block 3: Your backend service (No changes needed here)
+server {
+    listen 8080;
+    listen [::]:8080;
+    server_name www.sultanafitness.store www1.sultanafitness.store;
+    root /home/sultanafitness/htdocs/www.sultanafitness.store;
+
+    include /etc/nginx/global_settings;
+
+    try_files $uri $uri/ /index.php?$args;
+    index index.php index.html;
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        # Make sure your fastcgi_pass directive is here, for example:
+        # fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+    }
+}
+ Block 1: Redirects all non-www and HTTP traffic to https://www.sultanafitness.store
+server {
+    listen 80;
+    listen [::]:80;
+    server_name sultanafitness.store www.sultanafitness.store;
+    return 301 https://www.sultanafitness.store$request_uri;
+}
+
+# Block 2: Main server configuration for your site
+server {
+    listen 443 quic;
+    listen 443 ssl;
+    listen [::]:443 quic;
+    listen [::]:443 ssl;
+    http2 on;
+    http3 off;
+
+    server_name www.sultanafitness.store www1.sultanafitness.store;
+    root /home/sultanafitness/htdocs/www.sultanafitness.store;
+
+    # SSL Configuration
+    ssl_certificate_key /etc/nginx/ssl-certificates/www.sultanafitness.store.key;
+    ssl_certificate /etc/nginx/ssl-certificates/www.sultanafitness.store.crt;
+
+    # Logging
+    access_log /home/sultanafitness/logs/nginx/access.log main;
+    error_log /home/sultanafitness/logs/nginx/error.log;
+
+    # Let's Encrypt challenge
+    location ~ /.well-known {
+        auth_basic off;
+        allow all;
+    }
+
+    # Deny access to sensitive files
+    location ~ /\.git { deny all; }
+    location = /xmlrpc.php { deny all; }
+
+    # ------------------- START: CORS FIX FOR WOOCOMMERCE API -------------------
+    # This new location block allows your Next.js app to access the API.
+    location /wp-json/ {
+        # Allow requests only from your frontend domain
+        add_header 'Access-Control-Allow-Origin' 'https://sulthanafitness.shop' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization' always;
+        add_header 'Access-Control-Allow-Credentials' 'true' always;
+
+        # Handle preflight OPTIONS requests from browsers
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Max-Age' 1728000;
+            add_header 'Content-Type' 'text/plain; charset=utf-8';
+            add_header 'Content-Length' 0;
+            return 204;
+        }
+
+        # Pass the API request to the backend service
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_hide_header X-Varnish;
+        proxy_redirect off;
+    }
+    # -------------------- END: CORS FIX FOR WOOCOMMERCE API --------------------
+
+    # Proxy for wp-admin and wp-login
+    location ~/(wp-admin/|wp-login.php) {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header Host $host;
+        proxy_max_temp_file_size 0;
+        proxy_connect_timeout      7200;
+        proxy_send_timeout         7200;
+        proxy_read_timeout         7200;
+        proxy_buffer_size          128k;
+        proxy_buffers              4 256k;
+           expires max;
+    access_log off;
+  }
+
+  if (-f $request_filename) {
+    break;
+  }
+}
+
+server {
+  listen 8080;
+  listen [::]:8080;
+  server_name www.sultanafitness.store www1.sultanafitness.store;
+  root /home/sultanafitness/htdocs/www.sultanafitness.store;
+
+  include /etc/nginx/global_settings;
+
+  try_files $uri $uri/ /index.php?$args;
+  index index.php index.html;
+
+  location ~ \.php$ {
+    include fastcgi_params;
+    fastcgi_intercept_errors on;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    try_files $uri =404;
+    fastcgi_read_timeout 3600;
+    fastcgi_send_timeout 3600;
+    fastcgi_param HTTPS "on";
+    fastcgi_param SERVER_PORT 443;
+    fastcgi_pass 127.0.0.1:15002;
+    fastcgi_param PHP_VALUE "
+error_log=/home/sultanafitness/logs/php/error.log;
+memory_limit=512M;
+max_execution_time=60;
+max_input_time=60;
+max_input_vars=10000;
+post_max_size=64M;
+upload_max_filesize=64M;
+date.timezone=UTC;
+display_errors=off;";
+  }
+
+  # WordPress Multisite Subdirectory
+  if (!-e $request_filename) {
+    rewrite /wp-admin$ https://$host$uri permanent;
+    rewrite ^/[_0-9a-zA-Z-]+(/wp-.*) $1 last;
+    rewrite ^/[_0-9a-zA-Z-]+(/.*\.php)$ $1 last;
+  }
+
+  if (-f $request_filename) {
+    break;
+  }
+}
+
+        proxy_busy_buffers_size    256k;
+        proxy_temp_file_write_size 256k;
+    }
+
+    # General proxy for all other requests
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_hide_header X-Varnish;
+        proxy_redirect off;
+        proxy_max_temp_file_size 0;
+        proxy_connect_timeout      720;
+        proxy_send_timeout         720;
+        proxy_read_timeout         720;
+        proxy_buffer_size          128k;
+        proxy_buffers              4 256k;
+        proxy_busy_buffers_size    256k;
+        proxy_temp_file_write_size 256k;
+    }
+
+    # Caching for static assets
+    location ~* ^.+\.(css|js|jpg|jpeg|gif|png|ico|gz|svg|svgz|ttf|otf|woff|woff2|eot|mp4|ogg|ogv|webm|webp|zip|swf|map)$ {
+        add_header Access-Control-Allow-Origin "*";
+        add_header alt-svc 'h3=":443"; ma=86400';
+        expires max;
+        access_log off;
+    }
+}
+
+# Block 3: Your backend service (No changes needed here)
+server {
+    listen 8080;
+    listen [::]:8080;
+    server_name www.sultanafitness.store www1.sultanafitness.store;
+    root /home/sultanafitness/htdocs/www.sultanafitness.store;
+
+    include /etc/nginx/global_settings;
+
+    try_files $uri $uri/ /index.php?$args;
+    index index.php index.html;
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        # Make sure your fastcgi_pass directive is here, for example:
+        # fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+    }
+}
