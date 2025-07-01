@@ -102,7 +102,7 @@ const nextConfig = {
     return [
       {
         source: '/wc-api/:path*',
-        destination: 'https://www.sultanafitness.store/wp-json/wc/v3/:path*',
+        destination: 'https://sultanafitness.store/wp-json/wc/v3/:path*',
       },
     ];
   },
@@ -110,7 +110,7 @@ const nextConfig = {
   // Environment variables that should be available on the client side
   env: {
     NEXT_PUBLIC_SITE_URL: 'https://sulthanafitness.shop',
-    NEXT_PUBLIC_WC_STORE_URL: 'https://www.sultanafitness.store',
+    NEXT_PUBLIC_WC_STORE_URL: 'https://sultanafitness.store',
   },
 
 
