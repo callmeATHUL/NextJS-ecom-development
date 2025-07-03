@@ -1,257 +1,289 @@
-import axios from "axios"
+// Mock CoCart API configuration (no actual API calls)
+const MOCK_COCART_API_BASE = "/mock-cocart-api/v2" // A dummy base URL
 
-// CoCart API configuration
-const COCART_API_BASE = "https://sultanafitness.store/wp-json/cocart/v2"
-
-const cartApi = axios.create({
-  baseURL: COCART_API_BASE,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  timeout: 10000, // 10 second timeout
-})
-
-// Cart interfaces
+// Cart interfaces (simplified for mock)
 export interface CartItem {
-  item_key: string
-  id: number
-  name: string
-  title: string
-  price: string
+  item_key: string;
+  id: number;
+  name: string;
+  price: string;
   quantity: {
-    value: number
-    min_purchase: number
-    max_purchase: number
-  }
+    value: number;
+    min_purchase: number;
+    max_purchase: number;
+  };
   totals: {
-    subtotal: number
-    subtotal_tax: number
-    total: number
-    tax: number
-  }
-  slug: string
+    subtotal: number;
+    subtotal_tax: number;
+    total: number;
+    tax: number;
+  };
+  slug: string;
   meta: {
-    product_type: string
-    sku: string
+    product_type: string;
+    sku: string;
     dimensions: {
-      length: string
-      width: string
-      height: string
-    }
-    weight: number
-  }
-  backorders: string
-  cart_item_data: any[]
-  Featured_image: string
+      length: string;
+      width: string;
+      height: string;
+    };
+    weight: number;
+  };
+  backorders: string;
+  cart_item_data: any[];
+  Featured_image: string;
 }
 
 export interface Cart {
-  cart_hash: string
-  cart_key: string
+  cart_hash: string;
+  cart_key: string;
   currency: {
-    currency_code: string
-    currency_symbol: string
-    currency_minor_unit: number
-    currency_decimal_separator: string
-    currency_thousand_separator: string
-    currency_prefix: string
-    currency_suffix: string
-  }
+    currency_code: string;
+    currency_symbol: string;
+    currency_minor_unit: number;
+    currency_decimal_separator: string;
+    currency_thousand_separator: string;
+    currency_prefix: string;
+    currency_suffix: string;
+  };
   customer: {
-    billing_address: any
-    shipping_address: any
-  }
-  items: CartItem[]
-  item_count: number
-  items_weight: number
-  coupons: any[]
-  needs_payment: boolean
-  needs_shipping: boolean
+    billing_address: any;
+    shipping_address: any;
+  };
+  items: CartItem[];
+  item_count: number;
+  items_weight: number;
+  coupons: any[];
+  needs_payment: boolean;
+  needs_shipping: boolean;
   shipping: {
-    total_packages: number
-    show_package_details: boolean
-    has_calculated_shipping: boolean
-    packages: any[]
-  }
-  fees: any[]
-  taxes: any[]
+    total_packages: number;
+    show_package_details: boolean;
+    has_calculated_shipping: boolean;
+    packages: any[];
+  };
+  fees: any[];
+  taxes: any[];
   totals: {
-    subtotal: string
-    subtotal_tax: string
-    fee_total: string
-    fee_tax: string
-    discount_total: string
-    discount_tax: string
-    shipping_total: string
-    shipping_tax: string
-    total: string
-    total_tax: string
-  }
+    subtotal: string;
+    subtotal_tax: string;
+    fee_total: string;
+    fee_tax: string;
+    discount_total: string;
+    discount_tax: string;
+    shipping_total: string;
+    shipping_tax: string;
+    total: string;
+    total_tax: string;
+  };
 }
 
-// Test CoCart API connection
+// In-memory cart data
+let mockCart: Cart = {
+  cart_hash: "mock_cart_hash",
+  cart_key: "mock_cart_key",
+  currency: {
+    currency_code: "SAR",
+    currency_symbol: "SAR",
+    currency_minor_unit: 2,
+    currency_decimal_separator: ".",
+    currency_thousand_separator: ",",
+    currency_prefix: "",
+    currency_suffix: "",
+  },
+  customer: {
+    billing_address: {},
+    shipping_address: {},
+  },
+  items: [],
+  item_count: 0,
+  items_weight: 0,
+  coupons: [],
+  needs_payment: true,
+  needs_shipping: true,
+  shipping: {
+    total_packages: 0,
+    show_package_details: false,
+    has_calculated_shipping: false,
+    packages: [],
+  },
+  fees: [],
+  taxes: [],
+  totals: {
+    subtotal: "0.00",
+    subtotal_tax: "0.00",
+    fee_total: "0.00",
+    fee_tax: "0.00",
+    discount_total: "0.00",
+    discount_tax: "0.00",
+    shipping_total: "0.00",
+    shipping_tax: "0.00",
+    total: "0.00",
+    total_tax: "0.00",
+  },
+};
+
+// Helper to update totals
+const updateMockCartTotals = () => {
+  let subtotal = 0;
+  let totalItems = 0;
+  mockCart.items.forEach(item => {
+    subtotal += parseFloat(item.price) * item.quantity.value;
+    totalItems += item.quantity.value;
+  });
+  mockCart.totals.subtotal = subtotal.toFixed(2);
+  mockCart.totals.total = subtotal.toFixed(2); // For simplicity, total equals subtotal in mock
+  mockCart.item_count = totalItems;
+};
+
+// Mock API functions
+
 export async function testCoCartConnection(): Promise<boolean> {
-  try {
-    console.log("🔍 Testing CoCart API connection...")
-
-    const response = await cartApi.get("/cart")
-    console.log("✅ CoCart API connection successful")
-    console.log("Response status:", response.status)
-    return true
-  } catch (error: any) {
-    console.error("❌ CoCart API connection failed:", error.message)
-    if (error.response) {
-      console.error("Response status:", error.response.status)
-      console.error("Response data:", error.response.data)
-    }
-    return false
-  }
+  console.log("🔍 Testing Mock CoCart API connection...")
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("✅ Mock CoCart API connection successful")
+      resolve(true)
+    }, 100)
+  })
 }
 
-// Get current cart
 export async function getCart(): Promise<Cart | null> {
-  try {
-    console.log("🛒 Fetching cart contents")
-
-    const response = await cartApi.get("/cart")
-    console.log("✅ Cart fetched successfully")
-    return response.data
-  } catch (error: any) {
-    console.error("❌ Error fetching cart:", error.message)
-
-    if (error.code === "ECONNABORTED") {
-      console.error("Request timeout - CoCart API is taking too long to respond")
-    } else if (error.code === "ERR_NETWORK") {
-      console.error("Network error - Cannot reach CoCart API")
-    } else if (error.response) {
-      console.error("HTTP Error:", error.response.status, error.response.statusText)
-      console.error("Response data:", error.response.data)
-    }
-
-    return null
-  }
+  console.log("🛒 Fetching mock cart contents")
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      updateMockCartTotals();
+      console.log("✅ Mock cart fetched successfully")
+      resolve(mockCart)
+    }, 100)
+  })
 }
 
-// Add item to cart
 export async function addToCart(productId: number, quantity = 1): Promise<CartItem | null> {
-  try {
-    console.log(`🛒 Adding product ${productId} (qty: ${quantity}) to cart`)
+  console.log(`🛒 Adding mock product ${productId} (qty: ${quantity}) to cart`)
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      // Simulate product data - in a real app, this would come from a product API
+      const existingItem = mockCart.items.find(item => item.id === productId);
 
-    // Test connection first
-    const isConnected = await testCoCartConnection()
-    if (!isConnected) {
-      throw new Error("CoCart API is not available")
-    }
-
-    const response = await cartApi.post("/cart/add-item", {
-      id: productId,
-      quantity: quantity,
-    })
-
-    console.log("✅ Product added to cart successfully")
-    return response.data
-  } catch (error: any) {
-    console.error("❌ Error adding product to cart:", error.message)
-
-    if (error.response?.status === 404) {
-      throw new Error("Product not found")
-    } else if (error.response?.status === 400) {
-      throw new Error(error.response?.data?.message || "Invalid product or quantity")
-    } else if (error.code === "ERR_NETWORK") {
-      throw new Error("Network error - Cannot reach cart service")
-    } else {
-      throw new Error(error.response?.data?.message || "Failed to add product to cart")
-    }
-  }
+      if (existingItem) {
+        existingItem.quantity.value += quantity;
+        existingItem.totals.subtotal = parseFloat(existingItem.price) * existingItem.quantity.value;
+        existingItem.totals.total = existingItem.totals.subtotal;
+      } else {
+        const newItem: CartItem = {
+          item_key: `mock-item-${Date.now()}`,
+          id: productId,
+          name: `Mock Product ${productId}`,
+          price: (100 + productId).toFixed(2), // Dummy price
+          quantity: {
+            value: quantity,
+            min_purchase: 1,
+            max_purchase: 99,
+          },
+          totals: {
+            subtotal: parseFloat((100 + productId).toFixed(2)) * quantity,
+            subtotal_tax: 0,
+            total: parseFloat((100 + productId).toFixed(2)) * quantity,
+            tax: 0,
+          },
+          slug: `mock-product-${productId}`,
+          meta: {
+            product_type: "simple",
+            sku: `SKU-${productId}`,
+            dimensions: { length: "10", width: "10", height: "10" },
+            weight: 1,
+          },
+          backorders: "no",
+          cart_item_data: [],
+          Featured_image: `/placehold.jpg`, // Dummy image
+        };
+        mockCart.items.push(newItem);
+      }
+      updateMockCartTotals();
+      console.log("✅ Mock product added to cart successfully")
+      resolve(mockCart.items.find(item => item.id === productId) || null);
+    }, 100)
+  })
 }
 
-// Update cart item quantity
 export async function updateCartItem(itemKey: string, quantity: number): Promise<CartItem | null> {
-  try {
-    console.log(`🛒 Updating cart item ${itemKey} to quantity ${quantity}`)
-
-    const response = await cartApi.post("/cart/item", {
-      cart_item_key: itemKey,
-      quantity: quantity,
-    })
-
-    console.log("✅ Cart item updated successfully")
-    return response.data
-  } catch (error: any) {
-    console.error("❌ Error updating cart item:", error.message)
-    throw new Error(error.response?.data?.message || "Failed to update cart item")
-  }
+  console.log(`🛒 Updating mock cart item ${itemKey} to quantity ${quantity}`)
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const itemIndex = mockCart.items.findIndex(item => item.item_key === itemKey);
+      if (itemIndex > -1) {
+        mockCart.items[itemIndex].quantity.value = quantity;
+        mockCart.items[itemIndex].totals.subtotal = parseFloat(mockCart.items[itemIndex].price) * quantity;
+        mockCart.items[itemIndex].totals.total = mockCart.items[itemIndex].totals.subtotal;
+        updateMockCartTotals();
+        console.log("✅ Mock cart item updated successfully")
+        resolve(mockCart.items[itemIndex]);
+      } else {
+        reject(new Error("Mock item not found"));
+      }
+    }, 100)
+  })
 }
 
-// Remove item from cart
 export async function removeFromCart(itemKey: string): Promise<boolean> {
-  try {
-    console.log(`🛒 Removing cart item ${itemKey}`)
-
-    await cartApi.delete(`/cart/item/${itemKey}`)
-
-    console.log("✅ Cart item removed successfully")
-    return true
-  } catch (error: any) {
-    console.error("❌ Error removing cart item:", error.message)
-    throw new Error(error.response?.data?.message || "Failed to remove cart item")
-  }
+  console.log(`🛒 Removing mock cart item ${itemKey}`)
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const initialLength = mockCart.items.length;
+      mockCart.items = mockCart.items.filter(item => item.item_key !== itemKey);
+      updateMockCartTotals();
+      console.log("✅ Mock cart item removed successfully")
+      resolve(mockCart.items.length < initialLength);
+    }, 100)
+  })
 }
 
-// Clear entire cart
 export async function clearCart(): Promise<boolean> {
-  try {
-    console.log("🛒 Clearing entire cart")
-
-    await cartApi.delete("/cart/clear")
-
-    console.log("✅ Cart cleayellow successfully")
-    return true
-  } catch (error: any) {
-    console.error("❌ Error clearing cart:", error.message)
-    throw new Error(error.response?.data?.message || "Failed to clear cart")
-  }
+  console.log("🛒 Clearing entire mock cart")
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      mockCart.items = [];
+      updateMockCartTotals();
+      console.log("✅ Mock cart cleared successfully")
+      resolve(true);
+    }, 100)
+  })
+})
 }
 
-// Get cart item count
 export async function getCartItemCount(): Promise<number> {
-  try {
-    const cart = await getCart()
-    return cart?.item_count || 0
-  } catch (error: any) {
-    console.error("❌ Error getting cart item count:", error)
-    return 0
-  }
+  console.log("🛒 Getting mock cart item count")
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      updateMockCartTotals();
+      resolve(mockCart.item_count);
+    }, 100)
+  })
 }
 
-// Apply coupon
 export async function applyCoupon(couponCode: string): Promise<boolean> {
-  try {
-    console.log(`🛒 Applying coupon: ${couponCode}`)
-
-    await cartApi.post("/cart/coupon", {
-      coupon: couponCode,
-    })
-
-    console.log("✅ Coupon applied successfully")
-    return true
-  } catch (error: any) {
-    console.error("❌ Error applying coupon:", error.message)
-    throw new Error(error.response?.data?.message || "Failed to apply coupon")
-  }
+  console.log(`🛒 Applying mock coupon: ${couponCode}`)
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Mock coupon logic: always succeed for "SAVE10"
+      if (couponCode === "SAVE10") {
+        console.log("✅ Mock coupon applied successfully")
+        resolve(true);
+      } else {
+        console.log("❌ Mock coupon failed")
+        resolve(false);
+      }
+    }, 100)
+  })
 }
 
-// Remove coupon
 export async function removeCoupon(couponCode: string): Promise<boolean> {
-  try {
-    console.log(`🛒 Removing coupon: ${couponCode}`)
-
-    await cartApi.delete(`/cart/coupon/${couponCode}`)
-
-    console.log("✅ Coupon removed successfully")
-    return true
-  } catch (error: any) {
-    console.error("❌ Error removing coupon:", error.message)
-    throw new Error(error.response?.data?.message || "Failed to remove coupon")
-  }
+  console.log(`🛒 Removing mock coupon: ${couponCode}`)
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("✅ Mock coupon removed successfully")
+      resolve(true);
+    }, 100)
+  })
 }

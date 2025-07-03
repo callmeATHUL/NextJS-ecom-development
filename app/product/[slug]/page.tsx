@@ -37,7 +37,7 @@ export default function ProductPage() {
   const handleAddToCart = () => {
     if (!product) return
 
-    addItem(product.id)
+    addItem(product.id, quantity)
   }
 
   if (loading) {
